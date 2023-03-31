@@ -1,6 +1,8 @@
 import React from "react";
 import GuessInput from "../GuessInput/GuessInput";
 import GuessResults from "../GuessResults/GuessResults";
+import WonBanner from "../WonBanner";
+import LostBanner from "../LostBanner/LostBanner";
 
 import { sample } from "../../utils";
 import { WORDS } from "../../data";
@@ -11,16 +13,32 @@ const answer = sample(WORDS);
 console.info({ answer });
 
 function Game() {
+  const [gameStatus, setGameStatus] = React.useState("running");
   const [guesses, setGuesses] = React.useState([]);
 
   function handleSubmitGuess(tentativeGuess) {
-    setGuesses([...guesses, tentativeGuess]);
+    const nextGuesses = [...guesses, tentativeGuess];
+    setGuesses(nextGuesses);
+
+    if (tentativeGuess !== answer && nextGuesses.length === 6) {
+      setGameStatus("lost");
+    }
+    if (tentativeGuess === answer) {
+      setGameStatus("won");
+    }
   }
 
   return (
     <>
+      {gameStatus}
       <GuessResults guesses={guesses} answer={answer} />
-      <GuessInput handleSubmitGuess={handleSubmitGuess} />
+      <GuessInput
+        handleSubmitGuess={handleSubmitGuess}
+        gameStatus={gameStatus}
+      />
+
+      {gameStatus === "won" && <WonBanner numOfGuesses={guesses.length} />}
+      {gameStatus === "lost" && <LostBanner answer={answer} />}
     </>
   );
 }

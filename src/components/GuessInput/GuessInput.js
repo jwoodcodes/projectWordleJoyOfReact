@@ -1,6 +1,6 @@
 import React from "react";
 
-function GuessInput({ handleSubmitGuess }) {
+function GuessInput({ handleSubmitGuess, gameStatus }) {
   const [tentativeGuess, setTentativeGuess] = React.useState("");
 
   const submitGuess = function (e) {
@@ -8,27 +8,30 @@ function GuessInput({ handleSubmitGuess }) {
   };
 
   return (
-    <form
-      className="guess-input-wrapper"
-      onSubmit={(e) => {
-        e.preventDefault();
+    <>
+      <form
+        className="guess-input-wrapper"
+        onSubmit={(e) => {
+          e.preventDefault();
 
-        handleSubmitGuess(tentativeGuess);
-        setTentativeGuess("");
-      }}
-    >
-      <label htmlFor="guess-input">Enter guess:</label>
-      <input
-        required
-        maxLength={5}
-        pattern="[a-zA-Z]{5}"
-        id="guess-input"
-        type="text"
-        value={tentativeGuess}
-        title="5 Letter Word"
-        onChange={submitGuess}
-      />
-    </form>
+          handleSubmitGuess(tentativeGuess);
+          setTentativeGuess("");
+        }}
+      >
+        <label htmlFor="guess-input">Enter guess:</label>
+        <input
+          required
+          maxLength={5}
+          disabled={gameStatus !== "running"}
+          pattern="[a-zA-Z]{5}"
+          id="guess-input"
+          type="text"
+          value={tentativeGuess}
+          title="5 Letter Word"
+          onChange={submitGuess}
+        />
+      </form>
+    </>
   );
 }
 
